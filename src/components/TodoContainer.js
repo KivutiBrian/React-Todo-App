@@ -1,4 +1,5 @@
 import React from "react";
+import Header from "./Header";
 import TodoList from "./TodoList"
 
 class TodoContainer extends React.Component {
@@ -23,9 +24,46 @@ class TodoContainer extends React.Component {
         ]
     }
 
+    handleChange = (id)=>{
+
+        /*
+            React does not guarantee that this.state written within the setState is uptodate
+            React therefore advices that we should not rely on value to calculate the next state as it may result in unintentended output.
+        */
+        // this.setState({
+        //     todos: this.state.todos.map(todo => {
+        //         if(todo.id == id){
+        //             todo.completed = !todo.completed
+        //         } 
+        //         return todo
+        //     })
+        // })
+
+        /*
+            updated
+        */
+        this.setState(prevState => ({
+            todos: prevState.todos.map(todo => {
+                if(todo.id == id){
+                    return { ...todo, completed: !todo.completed}
+                }
+                return todo
+            })
+        }))
+    }
+
+    deleteTodo = (id) => {
+        this.setState({
+            todos: [...this.state.todos.filter(todo => todo.id!=id)]
+        })
+    }
+
     render() {
         return (
-            <TodoList todos={this.state.todos} />
+            <div>
+                <Header />
+                <TodoList todos={this.state.todos} handleChangeProps={this.handleChange} deleteTodoProps={this.deleteTodo} />
+            </div>
         )
     }
 }
